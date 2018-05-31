@@ -5,6 +5,13 @@
         </title>
     </head>
     <body>
+        <div>
+            <a href="/new">Start a new conversation</a>
+            <a href="/all">See all my conversations</a>
+            <a href="/signout">Sign out</a>
+            <a href="/about">About Ox</a>
+        </div>
+        <hr>
         {% for utterance in utterances %}
         <h1>{{ utterance['text'] }}</h1>
         {% endfor %}
