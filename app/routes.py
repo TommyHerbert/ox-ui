@@ -5,7 +5,17 @@ from app import app
 @app.route('/')
 @app.route('/index')
 def index():
-    first_utterance = {'text': 'Hello, my name is Ox.'}
+    second_utterance = {'text': "Hi Ox, I'm Tommy.", 'next': None}
+    first_utterance = {'text': 'Hello, my name is Ox.', 'next': second_utterance}
     conversation = {'first_utterance': first_utterance}
-    return render_template('index.html', conversation=conversation)
+    utterances = []
+    utterance = first_utterance
+    while True:
+        utterances.append(utterance)
+        next_utterance = utterance['next']
+        if next_utterance:
+            utterance = next_utterance
+        else:
+            break
+    return render_template('index.html', utterances=utterances)
 
