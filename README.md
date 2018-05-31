@@ -1,2 +1,2 @@
 # ox-ui
-Flask app to allow people to communicate with Project Ox over the web.
+This is a front end for https://github.com/TommyHerbert/ox, and will eventually be merged with that project.
