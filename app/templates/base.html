@@ -1,0 +1,13 @@
+<html>
+    <head>
+        {% if title %}
+            <title>Ox: {{title}}</title>
+        {% else %}
+            <title>Ox</title>
+        {% endif %}
+    </head>
+    <body>
+        {% block content %}
+        {% endblock %}
+    </body>
+</html>
