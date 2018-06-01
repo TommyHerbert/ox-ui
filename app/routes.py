@@ -1,5 +1,6 @@
 from flask import render_template
 from app import app
+from app.forms import SignInForm
 
 
 @app.route('/')
@@ -18,4 +19,10 @@ def index():
         else:
             break
     return render_template('index.html', utterances=utterances)
+
+
+@app.route('/signin')
+def sign_in():
+    form = SignInForm()
+    return render_template('signin.html', title='sign up or sign in', form=form)
 
