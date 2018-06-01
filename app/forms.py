@@ -9,3 +9,8 @@ class SignInForm(FlaskForm):
     sign_up = SubmitField('sign up')
     sign_in = SubmitField('sign in')
 
+
+class SaySomethingForm(FlaskForm):
+    text = StringField('text', validators=[DataRequired()])
+    send = SubmitField('send')
+

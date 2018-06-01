@@ -11,4 +11,10 @@
     {% for utterance in utterances %}
         <h1>{{ utterance['text'] }}</h1>
     {% endfor %}
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.text(size=128) }} {{form.send}}
+        </p>
+    </form>
 {% endblock %}
