@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect
+from flask import render_template, flash, redirect, url_for
 from app import app
 from app.forms import SignInForm, SaySomethingForm
 
@@ -24,7 +24,7 @@ def index():
             break
     form = SaySomethingForm()
     if form.validate_on_submit():
-        return redirect('/index')
+        return redirect(url_for('index'))
     return render_template('index.html', utterances=utterances, form=form)
 
 
