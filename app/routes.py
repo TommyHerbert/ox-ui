@@ -28,6 +28,11 @@ def index():
     return render_template('index.html', utterances=utterances, form=form)
 
 
+@app.route('/all')
+def all_my_conversations():
+    return render_template('all.html', title='all')
+
+
 @app.route('/signin', methods=['GET', 'POST'])
 def sign_in():
     title = 'sign up or sign in'
@@ -36,3 +41,7 @@ def sign_in():
         flash('Sign up or sign in requested for {}'.format(form.email.data))
     return render_template('signin.html', title=title, form=form)
 
+
+@app.route('/about')
+def about():
+    return render_template('about.html', title='about')
