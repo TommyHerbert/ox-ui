@@ -24,8 +24,6 @@ def index():
             break
     form = SaySomethingForm()
     if form.validate_on_submit():
-        ox_utterance = {'text': 'Hello, my name is Ox.', 'next': None}
-        user_utterance = {'text': form.text.data, 'next': ox_utterance}
         return redirect('/index')
     return render_template('index.html', utterances=utterances, form=form)
 
