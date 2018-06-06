@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
-from app import app
-from app.forms import SignInForm, SaySomethingForm
+from app import app, db
+from app.forms import SignInForm, SignUpForm, SaySomethingForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import Speaker
 from werkzeug.urls import url_parse
@@ -38,7 +38,6 @@ def all_my_conversations():
 def sign_in():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
-    title = 'sign up or sign in'
     form = SignInForm()
     if form.validate_on_submit():
         speaker = Speaker.query.filter_by(email=form.email.data).first()
@@ -50,13 +49,28 @@ def sign_in():
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
         return redirect(next_page)
-    return render_template('signin.html', title=title, form=form)
+    return render_template('signin.html', title='sign in', form=form)
 
 
 @app.route('/signout')
 def sign_out():
     logout_user()
     return redirect(url_for('sign_in'))
+
+
+@app.route('/signup', methods=['GET', 'POST'])
+def sign_up():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = SignUpForm()
+    if form.validate_on_submit():
+        speaker = Speaker(email=form.email.data)
+        speaker.set_password(form.password.data)
+        db.session.add(speaker)
+        db.session.commit()
+        return redirect(url_for('sign_in'))
+    return render_template('signup.html', title='sign up', form=form)
+        
 
 
 @app.route('/about')
