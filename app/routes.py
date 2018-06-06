@@ -43,7 +43,7 @@ def sign_in():
         speaker = Speaker.query.filter_by(email=form.email.data).first()
         if speaker is None or not speaker.check_password(form.password.data):
             flash('invalid email address or password')
-            return redirect(url_for('signin'))
+            return redirect(url_for('sign_in'))
         login_user(speaker)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
