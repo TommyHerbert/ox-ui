@@ -1,4 +1,4 @@
-from app import app
+from app import app, db
 from app.models import Speaker, Utterance, Conversation
 
 
@@ -8,6 +8,6 @@ def make_shell_context():
         'db': db,
         'Speaker': Speaker,
         'Utterance': Utterance,
-        'Conversation': conversation
+        'Conversation': Conversation
     }
 
