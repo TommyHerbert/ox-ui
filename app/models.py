@@ -32,5 +32,6 @@ class Utterance(db.Model):
 
 class Conversation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    speaker_id = db.Column(db.Integer, db.ForeignKey('speaker.id'))
     first_utterance_id = db.Column(db.Integer, db.ForeignKey('utterance.id'))
 
