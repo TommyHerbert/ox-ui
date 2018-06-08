@@ -5,8 +5,13 @@ from flask_login import UserMixin
 
 class Speaker(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), index=True, unique=True)
-    password_hash = db.Column(db.String(128))
+    email = db.Column(db.String(120), index=True, unique=True, nullable=False)
+
+    # All speakers except Ox have passwords.
+    password_hash = db.Column(db.String(128), nullable=True)
+
+    conversations = \
+        db.relationship('Conversation', backref='speaker', lazy='dynamic')
 
     def __repr__(self):
         return '<Speaker {}>'.format(self.email)
@@ -25,15 +30,18 @@ def load_speaker(id):
 
 class Utterance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    speaker_id = db.Column(db.Integer, db.ForeignKey('speaker.id'))
-    text = db.Column(db.String(128))
-    conversation_id = db.Column(db.Integer, db.ForeignKey('conversation.id'))
-    order_number = db.Column(db.Integer)
+    speaker_id = \
+        db.Column(db.Integer, db.ForeignKey('speaker.id'), nullable=False)
+    text = db.Column(db.String(128), nullable=False)
+    conversation_id = \
+        db.Column(db.Integer, db.ForeignKey('conversation.id'), nullable=False)
+    order_number = db.Column(db.Integer, nullable=False)
 
 
 class Conversation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    speaker_id = db.Column(db.Integer, db.ForeignKey('speaker.id'))
+    speaker_id = \
+        db.Column(db.Integer, db.ForeignKey('speaker.id'), nullable=False)
     utterances = \
         db.relationship('Utterance', backref='conversation', lazy='dynamic')
 
