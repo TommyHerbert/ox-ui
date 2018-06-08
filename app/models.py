@@ -25,13 +25,15 @@ def load_speaker(id):
 
 class Utterance(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(128))
     speaker_id = db.Column(db.Integer, db.ForeignKey('speaker.id'))
-    next_id = db.Column(db.Integer, db.ForeignKey('utterance.id'))
+    text = db.Column(db.String(128))
+    conversation_id = db.Column(db.Integer, db.ForeignKey('conversation.id'))
+    order_number = db.Column(db.Integer)
 
 
 class Conversation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     speaker_id = db.Column(db.Integer, db.ForeignKey('speaker.id'))
-    first_utterance_id = db.Column(db.Integer, db.ForeignKey('utterance.id'))
+    utterances = \
+        db.relationship('Utterance', backref='conversation', lazy='dynamic')
 
