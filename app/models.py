@@ -12,6 +12,8 @@ class Speaker(UserMixin, db.Model):
 
     conversations = \
         db.relationship('Conversation', backref='speaker', lazy='dynamic')
+    utterances = \
+        db.relationship('Utterance', backref='speaker', lazy='dynamic')
 
     def __repr__(self):
         return '<Speaker {}>'.format(self.email)
