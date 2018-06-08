@@ -7,4 +7,9 @@ for s in [ox, thomas, buttercup]:
     db.session.add(s)
 db.session.commit()
 
-conversation = Conversation()
+thomas = Speaker.query.filter_by(email='thomas.aquinas@paris.com')
+conversation = Conversation(speaker=thomas)
+db.session.add(conversation)
+db.session.commit()
+
+u1 = Utterance()
