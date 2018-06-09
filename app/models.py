@@ -1,6 +1,7 @@
 from app import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from datetime import datetime
 
 
 class Speaker(UserMixin, db.Model):
@@ -37,7 +38,7 @@ class Utterance(db.Model):
     text = db.Column(db.String(128), nullable=False)
     conversation_id = \
         db.Column(db.Integer, db.ForeignKey('conversation.id'), nullable=False)
-    order_number = db.Column(db.Integer, nullable=False)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
 
 class Conversation(db.Model):
