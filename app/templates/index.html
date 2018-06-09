@@ -10,7 +10,7 @@
     </div>
     <hr>
     {% for utterance in utterances %}
-        <h1>{{ utterance['text'] }}</h1>
+        <p>{{ utterance.speaker.email }}: {{ utterance.text }}</p>
     {% endfor %}
     <form action="" method="post">
         {{ form.hidden_tag() }}

@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request
 from app import app, db
 from app.forms import SignInForm, SignUpForm, SaySomethingForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import Speaker
+from app.models import Speaker, Utterance
 from werkzeug.urls import url_parse
 
 
@@ -10,18 +10,11 @@ from werkzeug.urls import url_parse
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    second_utterance = {'text': "Hi Ox, I'm Tommy.", 'next': None}
-    first_utterance = {'text': 'Hello, my name is Ox.', 'next': second_utterance}
-    conversation = {'first_utterance': first_utterance}
-    utterances = []
-    utterance = first_utterance
-    while True:
-        utterances.append(utterance)
-        next_utterance = utterance['next']
-        if next_utterance:
-            utterance = next_utterance
-        else:
-            break
+    latest_utterance = Utterance.query \
+                                .filter_by(speaker=current_user) \
+                                .order_by(Utterance.timestamp.desc()) \
+                                .first()
+    utterances = latest_utterance.conversation.utterances
     form = SaySomethingForm()
     if form.validate_on_submit():
         return redirect(url_for('index'))

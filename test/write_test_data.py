@@ -12,7 +12,7 @@ db.session.commit()
 
 ox = Speaker(email='project.ox.mail@gmail.com')
 thomas = Speaker(email='thomas.aquinas@paris.com')
-thomas.set_password('thomas')
+thomas.set_password('aquinas')
 buttercup = Speaker(email='buttercup@cattle.com')
 buttercup.set_password('buttercup')
 for s in [ox, thomas, buttercup]:
