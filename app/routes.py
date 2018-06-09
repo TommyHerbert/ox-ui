@@ -71,7 +71,6 @@ def sign_up():
         db.session.commit()
         return redirect(url_for('sign_in'))
     return render_template('signup.html', title='sign up', form=form)
-        
 
 
 @app.route('/about')
