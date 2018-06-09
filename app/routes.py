@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request
 from app import app, db
 from app.forms import SignInForm, SignUpForm, SaySomethingForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import Speaker, Utterance
+from app.models import Speaker, Utterance, Conversation
 from werkzeug.urls import url_parse
 
 
@@ -27,6 +27,28 @@ def index():
         db.session.commit()
         return redirect(url_for('index'))
     return render_template('index.html', utterances=utterances, form=form)
+
+
+@app.route('/new', methods=['GET', 'POST'])
+@login_required
+def new():
+    ox = Speaker.query.filter_by(email='project.ox.mail@gmail.com').first()
+    conversation = Conversation(speaker=current_user)
+    db.session.add(conversation)
+    opener_text = 'Hello, my name is Ox.'
+    opener = Utterance(speaker=ox, text=opener_text, conversation=conversation)
+    db.session.add(opener)
+    form = SaySomethingForm()
+    if form.validate_on_submit():
+        utterance = Utterance(speaker=current_user,
+                              text=form.text.data,
+                              conversation=conversation)
+        db.session.add(utterance)
+        reply = Utterance(speaker=ox, text='Hello.', conversation=conversation)
+        db.session.add(reply)
+        db.session.commit()
+        return redirect(url_for('index'))
+    return render_template('index.html', utterances=[opener], form=form)
 
 
 @app.route('/all')
