@@ -10,13 +10,21 @@ from werkzeug.urls import url_parse
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    latest_utterance = Utterance.query \
-                                .filter_by(speaker=current_user) \
-                                .order_by(Utterance.timestamp.desc()) \
-                                .first()
-    utterances = latest_utterance.conversation.utterances
+    query = Utterance.query.filter_by(speaker=current_user) \
+                           .order_by(Utterance.timestamp.desc())
+    conversation = query.first().conversation
+    utterances = conversation.utterances
     form = SaySomethingForm()
     if form.validate_on_submit():
+        utterance = Utterance(speaker=current_user,
+                              text=form.text.data,
+                              conversation=conversation)
+        db.session.add(utterance)
+        db.session.commit()
+        ox = Speaker.query.filter_by(email='project.ox.mail@gmail.com').first()
+        reply = Utterance(speaker=ox, text='Hello.', conversation=conversation)
+        db.session.add(reply)
+        db.session.commit()
         return redirect(url_for('index'))
     return render_template('index.html', utterances=utterances, form=form)
 
