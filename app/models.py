@@ -45,6 +45,13 @@ class Conversation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     speaker_id = \
         db.Column(db.Integer, db.ForeignKey('speaker.id'), nullable=False)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     utterances = \
         db.relationship('Utterance', backref='conversation', lazy='dynamic')
 
+    def add_utterance(self, utterance):
+        utterance.conversation = self
+        utterance.timestamp = datetime.utcnow()
+        self.timestamp = utterance.timestamp
+        db.session.add(self)
+        db.session.add(utterance)

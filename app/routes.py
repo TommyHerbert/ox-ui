@@ -10,20 +10,17 @@ from werkzeug.urls import url_parse
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    query = Utterance.query.filter_by(speaker=current_user) \
-                           .order_by(Utterance.timestamp.desc())
-    conversation = query.first().conversation
+    query = Conversation.query.filter_by(speaker=current_user) \
+                              .order_by(Conversation.timestamp.desc())
+    conversation = query.first()
     utterances = conversation.utterances
     form = SaySomethingForm()
     if form.validate_on_submit():
-        utterance = Utterance(speaker=current_user,
-                              text=form.text.data,
-                              conversation=conversation)
-        db.session.add(utterance)
-        db.session.commit()
+        utterance = Utterance(speaker=current_user, text=form.text.data)
+        conversation.add_utterance(utterance)
         ox = Speaker.query.filter_by(email='project.ox.mail@gmail.com').first()
-        reply = Utterance(speaker=ox, text='Hello.', conversation=conversation)
-        db.session.add(reply)
+        reply = Utterance(speaker=ox, text='Hello.')
+        conversation.add_utterance(reply)
         db.session.commit()
         return redirect(url_for('index'))
     return render_template('index.html', utterances=utterances, form=form)
@@ -34,20 +31,17 @@ def index():
 def new():
     ox = Speaker.query.filter_by(email='project.ox.mail@gmail.com').first()
     conversation = Conversation(speaker=current_user)
-    db.session.add(conversation)
-    opener_text = 'Hello, my name is Ox.'
-    opener = Utterance(speaker=ox, text=opener_text, conversation=conversation)
-    db.session.add(opener)
+    opener = Utterance(speaker=ox, text='Hello, my name is Ox.')
+    conversation.add_utterance(opener)
     form = SaySomethingForm()
     if form.validate_on_submit():
-        utterance = Utterance(speaker=current_user,
-                              text=form.text.data,
-                              conversation=conversation)
-        db.session.add(utterance)
-        reply = Utterance(speaker=ox, text='Hello.', conversation=conversation)
-        db.session.add(reply)
+        utterance = Utterance(speaker=current_user, text=form.text.data)
+        conversation.add_utterance(utterance)
+        reply = Utterance(speaker=ox, text='Hello.')
+        conversation.add_utterance(reply)
         db.session.commit()
         return redirect(url_for('index'))
+    db.session.commit()
     return render_template('index.html', utterances=[opener], form=form)
 
 

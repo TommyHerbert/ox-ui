@@ -20,7 +20,8 @@ for s in [ox, thomas, buttercup]:
 db.session.commit()
 
 thomas = Speaker.query.filter_by(email='thomas.aquinas@paris.com').first()
-conversation = Conversation(speaker=thomas)
+conversation_start = datetime.utcnow() - timedelta(seconds=2)
+conversation = Conversation(speaker=thomas, timestamp=conversation_start)
 db.session.add(conversation)
 db.session.commit()
 
@@ -29,15 +30,15 @@ conversation = Conversation.query.all()[0]
 u1 = Utterance(speaker=ox,
                text='Hello, my name is Ox.',
                conversation=conversation,
-               timestamp=datetime.utcnow() - timedelta(seconds=2))
+               timestamp=conversation_start)
 u2 = Utterance(speaker=thomas,
                text="What's your favourite Adele song?",
                conversation=conversation,
-               timestamp=datetime.utcnow() - timedelta(seconds=1))
+               timestamp=conversation_start + timedelta(seconds=1))
 u3 = Utterance(speaker=ox,
                text="Hello.",
                conversation=conversation,
-               timestamp=datetime.utcnow())
+               timestamp=conversation_start + timedelta(seconds=2))
 for u in [u1, u2, u3]:
     db.session.add(u)
 db.session.commit()
