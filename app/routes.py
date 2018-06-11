@@ -6,13 +6,26 @@ from app.models import Speaker, Utterance, Conversation
 from werkzeug.urls import url_parse
 
 
-@app.route('/', methods=['GET', 'POST'])
-@app.route('/index', methods=['GET', 'POST'])
+@app.route('/')
+@app.route('/index')
 @login_required
 def index():
     query = Conversation.query.filter_by(speaker=current_user) \
                               .order_by(Conversation.timestamp.desc())
     conversation = query.first()
+    if not conversation:
+        return redirect(url_for('new'))
+    return redirect(url_for('conversation', id=conversation.id))
+
+
+@app.route('/conversation/<id>', methods=['GET', 'POST'])
+@login_required
+def conversation(id):
+    conversation = Conversation.query.get(id)
+    if not conversation:
+        return 'no such conversation', 404
+    if conversation.speaker != current_user:
+        return "tried to view another user's conversation", 403
     utterances = conversation.utterances
     form = SaySomethingForm()
     if form.validate_on_submit():
@@ -22,7 +35,7 @@ def index():
         reply = Utterance(speaker=ox, text='Hello.')
         conversation.add_utterance(reply)
         db.session.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('conversation', id=conversation.id))
     return render_template('index.html', utterances=utterances, form=form)
 
 
