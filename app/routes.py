@@ -61,7 +61,10 @@ def new():
 @app.route('/all')
 @login_required
 def all_my_conversations():
-    return render_template('all.html', title='all')
+    conversations = Conversation.query.filter_by(speaker=current_user).all()
+    return render_template('all.html',
+                           title='all',
+                           conversations=conversations)
 
 
 @app.route('/signin', methods=['GET', 'POST'])

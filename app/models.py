@@ -55,3 +55,10 @@ class Conversation(db.Model):
         self.timestamp = utterance.timestamp
         db.session.add(self)
         db.session.add(utterance)
+
+    def get_first_user_utterance(self):
+        for u in self.utterances:
+            if u.speaker.email != 'project.ox.mail@gmail.com':
+                return u
+        return None
+
