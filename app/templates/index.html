@@ -5,7 +5,7 @@
         <p>logged in as {{ current_user.email }}</p>
         <p><a href="{{ url_for('new') }}">Start a new conversation</a></p>
         <p><a href="{{ url_for('all_my_conversations') }}">See all my conversations</a></p>
-        <p><a href="{{ url_for('about') }}">About Ox</a></p>
+        <p><a href="/static/about.html">About Ox</a></p>
         <p><a href="{{ url_for('sign_out') }}">Sign out</a></p>
     </div>
     <hr>
