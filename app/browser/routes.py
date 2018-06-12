@@ -1,24 +1,24 @@
 from flask import render_template, flash, redirect, url_for, request
-from app import app, db
-from app.forms import SignInForm, SignUpForm, SaySomethingForm
-from flask_login import current_user, login_user, logout_user, login_required
+from app import db
+from app.browser.forms import SaySomethingForm
+from flask_login import current_user, login_required
 from app.models import Speaker, Utterance, Conversation
-from werkzeug.urls import url_parse
+from app.browser import bp
 
 
-@app.route('/')
-@app.route('/index')
+@bp.route('/')
+@bp.route('/index')
 @login_required
 def index():
     query = Conversation.query.filter_by(speaker=current_user) \
                               .order_by(Conversation.timestamp.desc())
     conversation = query.first()
     if not conversation:
-        return redirect(url_for('new'))
-    return redirect(url_for('conversation', id=conversation.id))
+        return redirect(url_for('browser.new'))
+    return redirect(url_for('browser.conversation', id=conversation.id))
 
 
-@app.route('/conversation/<id>', methods=['GET', 'POST'])
+@bp.route('/conversation/<id>', methods=['GET', 'POST'])
 @login_required
 def conversation(id):
     conversation = Conversation.query.get(id)
@@ -35,11 +35,11 @@ def conversation(id):
         reply = Utterance(speaker=ox, text='Hello.')
         conversation.add_utterance(reply)
         db.session.commit()
-        return redirect(url_for('conversation', id=conversation.id))
+        return redirect(url_for('browser.conversation', id=conversation.id))
     return render_template('index.html', utterances=utterances, form=form)
 
 
-@app.route('/new', methods=['GET', 'POST'])
+@bp.route('/new', methods=['GET', 'POST'])
 @login_required
 def new():
     ox = Speaker.query.filter_by(email='project.ox.mail@gmail.com').first()
@@ -53,12 +53,12 @@ def new():
         reply = Utterance(speaker=ox, text='Hello.')
         conversation.add_utterance(reply)
         db.session.commit()
-        return redirect(url_for('index'))
+        return redirect(url_for('browser.index'))
     db.session.commit()
     return render_template('index.html', utterances=[opener], form=form)
 
 
-@app.route('/all')
+@bp.route('/all')
 @login_required
 def all_my_conversations():
     conversations = Conversation.query.filter_by(speaker=current_user).all()
@@ -67,45 +67,7 @@ def all_my_conversations():
                            conversations=conversations)
 
 
-@app.route('/signin', methods=['GET', 'POST'])
-def sign_in():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    form = SignInForm()
-    if form.validate_on_submit():
-        speaker = Speaker.query.filter_by(email=form.email.data).first()
-        if speaker is None or not speaker.check_password(form.password.data):
-            flash('invalid email address or password')
-            return redirect(url_for('sign_in'))
-        login_user(speaker)
-        next_page = request.args.get('next')
-        if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('index')
-        return redirect(next_page)
-    return render_template('signin.html', title='sign in', form=form)
-
-
-@app.route('/signout')
-def sign_out():
-    logout_user()
-    return redirect(url_for('sign_in'))
-
-
-@app.route('/signup', methods=['GET', 'POST'])
-def sign_up():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    form = SignUpForm()
-    if form.validate_on_submit():
-        speaker = Speaker(email=form.email.data)
-        speaker.set_password(form.password.data)
-        db.session.add(speaker)
-        db.session.commit()
-        return redirect(url_for('sign_in'))
-    return render_template('signup.html', title='sign up', form=form)
-
-
-@app.route('/about')
+@bp.route('/about')
 @login_required
 def about():
     return render_template('about.html', title='about')
