@@ -8,11 +8,18 @@ class Speaker(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
 
-    # All speakers except Ox have passwords.
+    # all speakers except Ox have passwords
     password_hash = db.Column(db.String(128), nullable=True)
 
-    conversations = \
-        db.relationship('Conversation', backref='speaker', lazy='dynamic')
+    # API authentication
+    token = db.Column(db.String(32), index=True, Unique=True)
+    token_expiry = db.Column(db.DateTime)
+
+    conversations = db.relationship(
+        'Conversation',
+        secondary=speaker_conversation,
+        backref=db.backref('speakers', lazy='dynamic'),
+        lazy='dynamic')
     utterances = \
         db.relationship('Utterance', backref='speaker', lazy='dynamic')
 
@@ -43,8 +50,6 @@ class Utterance(db.Model):
 
 class Conversation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    speaker_id = \
-        db.Column(db.Integer, db.ForeignKey('speaker.id'), nullable=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     utterances = \
         db.relationship('Utterance', backref='conversation', lazy='dynamic')
@@ -61,3 +66,8 @@ class Conversation(db.Model):
                 return u
         return None
 
+
+speaker_conversation = db.Table('speaker_conversation',
+    db.Column('speaker_id', db.Integer, db.ForeignKey('speaker.id')),
+    db.Column('conversation_id', db.Integer, db.ForeignKey('conversation.id'))
+)

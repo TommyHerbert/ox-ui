@@ -10,9 +10,11 @@ from app.browser_main import bp
 @bp.route('/index')
 @login_required
 def index():
-    query = Conversation.query.filter_by(speaker=current_user) \
-                              .order_by(Conversation.timestamp.desc())
-    conversation = query.first()
+
+    # TODO: Can this filter be simplified?
+    conversation_filter = Conversation.speakers.any(id=current_user.id)
+
+    conversation = Conversation.query.filter(conversation_filter).first()
     if not conversation:
         return redirect(url_for('browser_main.new'))
     return redirect(url_for('browser_main.conversation', id=conversation.id))
@@ -29,6 +31,7 @@ def conversation(id):
     utterances = conversation.utterances
     form = SaySomethingForm()
     if form.validate_on_submit():
+        # TODO: reduce code duplication
         utterance = Utterance(speaker=current_user, text=form.text.data)
         conversation.add_utterance(utterance)
         ox = Speaker.query.filter_by(email='project.ox.mail@gmail.com').first()
@@ -43,11 +46,17 @@ def conversation(id):
 @login_required
 def new():
     ox = Speaker.query.filter_by(email='project.ox.mail@gmail.com').first()
-    conversation = Conversation(speaker=current_user)
+    conversation = Conversation()
+
+    # TODO: experiment with ways to add multiple speakers at once
+    conversation.speakers.append(ox)
+    conversation.speakers.append(current_user)
+
     opener = Utterance(speaker=ox, text='Hello, my name is Ox.')
     conversation.add_utterance(opener)
     form = SaySomethingForm()
     if form.validate_on_submit():
+        # TODO: reduce code duplication
         utterance = Utterance(speaker=current_user, text=form.text.data)
         conversation.add_utterance(utterance)
         reply = Utterance(speaker=ox, text='Hello.')
@@ -61,7 +70,10 @@ def new():
 @bp.route('/all')
 @login_required
 def all_my_conversations():
-    conversations = Conversation.query.filter_by(speaker=current_user).all()
+
+    # TODO: Does this work?
+    conversations = Conversation.query.filter_by(current_user in speakers).all()
+
     return render_template('all.html',
                            title='all',
                            conversations=conversations)
