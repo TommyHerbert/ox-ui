@@ -53,7 +53,6 @@ class Conversation(db.Model):
         utterance.conversation = self
         utterance.timestamp = datetime.utcnow()
         self.timestamp = utterance.timestamp
-        db.session.add(self)
         db.session.add(utterance)
 
     def get_first_user_utterance(self):
