@@ -18,7 +18,7 @@ def index():
     return redirect(url_for('browser_main.conversation', id=conversation.id))
 
 
-@bp.route('/conversation/<id>', methods=['GET', 'POST'])
+@bp.route('/conversations/<id>', methods=['GET', 'POST'])
 @login_required
 def conversation(id):
     conversation = Conversation.query.get(id)
