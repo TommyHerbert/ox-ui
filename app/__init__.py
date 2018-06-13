@@ -7,7 +7,7 @@ from flask_login import LoginManager
 db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
-login.login_view = 'auth.sign_in'
+login.login_view = 'browser_auth.sign_in'
 
 
 def create_app(config_class=Config):
@@ -17,11 +17,11 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     login.init_app(app)
 
-    from app.auth import bp as auth_bp
-    app.register_blueprint(auth_bp, url_prefix='/auth')
+    from app.browser_auth import bp as browser_auth_bp
+    app.register_blueprint(browser_auth_bp, url_prefix='/auth')
 
-    from app.browser import bp as browser_bp
-    app.register_blueprint(browser_bp)
+    from app.browser_main import bp as browser_main_bp
+    app.register_blueprint(browser_main_bp)
 
     return app
 

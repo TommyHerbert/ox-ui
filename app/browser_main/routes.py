@@ -1,9 +1,9 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import db
-from app.browser.forms import SaySomethingForm
+from app.browser_main.forms import SaySomethingForm
 from flask_login import current_user, login_required
 from app.models import Speaker, Utterance, Conversation
-from app.browser import bp
+from app.browser_main import bp
 
 
 @bp.route('/')
@@ -14,8 +14,8 @@ def index():
                               .order_by(Conversation.timestamp.desc())
     conversation = query.first()
     if not conversation:
-        return redirect(url_for('browser.new'))
-    return redirect(url_for('browser.conversation', id=conversation.id))
+        return redirect(url_for('browser_main.new'))
+    return redirect(url_for('browser_main.conversation', id=conversation.id))
 
 
 @bp.route('/conversation/<id>', methods=['GET', 'POST'])
@@ -35,7 +35,7 @@ def conversation(id):
         reply = Utterance(speaker=ox, text='Hello.')
         conversation.add_utterance(reply)
         db.session.commit()
-        return redirect(url_for('browser.conversation', id=conversation.id))
+        return redirect(url_for('browser_main.conversation', id=conversation.id))
     return render_template('index.html', utterances=utterances, form=form)
 
 
@@ -53,7 +53,7 @@ def new():
         reply = Utterance(speaker=ox, text='Hello.')
         conversation.add_utterance(reply)
         db.session.commit()
-        return redirect(url_for('browser.index'))
+        return redirect(url_for('browser_main.index'))
     db.session.commit()
     return render_template('index.html', utterances=[opener], form=form)
 
