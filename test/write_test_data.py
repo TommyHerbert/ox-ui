@@ -17,16 +17,13 @@ buttercup = Speaker(email='buttercup@cattle.com')
 buttercup.set_password('buttercup')
 for s in [ox, thomas, buttercup]:
     db.session.add(s)
-db.session.commit()
 
-thomas = Speaker.query.filter_by(email='thomas.aquinas@paris.com').first()
 conversation_start = datetime.utcnow() - timedelta(seconds=2)
-conversation = Conversation(speaker=thomas, timestamp=conversation_start)
+conversation = Conversation(timestamp=conversation_start)
+conversation.speakers.append(ox)
+conversation.speakers.append(thomas)
 db.session.add(conversation)
-db.session.commit()
 
-ox = Speaker.query.filter_by(email='project.ox.mail@gmail.com').first()
-conversation = Conversation.query.all()[0]
 u1 = Utterance(speaker=ox,
                text='Hello, my name is Ox.',
                conversation=conversation,

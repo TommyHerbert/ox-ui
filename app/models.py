@@ -3,6 +3,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from datetime import datetime
 
+speaker_conversation = db.Table('speaker_conversation',
+    db.Column('speaker_id', db.Integer, db.ForeignKey('speaker.id')),
+    db.Column('conversation_id', db.Integer, db.ForeignKey('conversation.id'))
+)
+
 
 class Speaker(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -12,7 +17,7 @@ class Speaker(UserMixin, db.Model):
     password_hash = db.Column(db.String(128), nullable=True)
 
     # API authentication
-    token = db.Column(db.String(32), index=True, Unique=True)
+    token = db.Column(db.String(32), index=True, unique=True)
     token_expiry = db.Column(db.DateTime)
 
     conversations = db.relationship(
@@ -66,8 +71,3 @@ class Conversation(db.Model):
                 return u
         return None
 
-
-speaker_conversation = db.Table('speaker_conversation',
-    db.Column('speaker_id', db.Integer, db.ForeignKey('speaker.id')),
-    db.Column('conversation_id', db.Integer, db.ForeignKey('conversation.id'))
-)

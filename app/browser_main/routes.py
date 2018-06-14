@@ -26,7 +26,7 @@ def conversation(id):
     conversation = Conversation.query.get(id)
     if not conversation:
         return 'no such conversation', 404
-    if conversation.speaker != current_user:
+    if current_user not in conversation.speakers:
         return "tried to view another user's conversation", 403
     utterances = conversation.utterances
     form = SaySomethingForm()
