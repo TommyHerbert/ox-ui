@@ -23,6 +23,9 @@ def create_app(config_class=Config):
     from app.browser_main import bp as browser_main_bp
     app.register_blueprint(browser_main_bp)
 
+    from app.api import bp as api_bp
+    app.register_blueprint(api_bp, url_prefix='/api')
+
     return app
 
 

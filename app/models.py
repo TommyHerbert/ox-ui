@@ -37,6 +37,12 @@ class Speaker(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def from_dict(self, data, new_speaker=False):
+        if 'email' in data:
+            self.email = data['email']
+        if new_speaker and 'password' in data:
+            self.set_password(data['password'])
+
 
 @login.user_loader
 def load_speaker(id):
