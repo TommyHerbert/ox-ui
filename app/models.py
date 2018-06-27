@@ -1,7 +1,9 @@
 from app import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from datetime import datetime
+from datetime import datetime, timedelta
+import base64
+import os
 
 speaker_conversation = db.Table('speaker_conversation',
     db.Column('speaker_id', db.Integer, db.ForeignKey('speaker.id')),
@@ -42,6 +44,25 @@ class Speaker(UserMixin, db.Model):
             self.email = data['email']
         if new_speaker and 'password' in data:
             self.set_password(data['password'])
+
+    def get_token(self, seconds_till_expiry=3600):
+        now = datetime.utcnow()
+        if self.token and self.token_expiration > now + timedelta(seconds=60):
+            return self.token
+        self.token = base64.b64encode(os.urandom(24)).decode('utf-8')
+        self.token_expiry = now + timedelta(seconds=seconds_till_expiry)
+        db.session.add(self)
+        return self.token
+
+    def revoke_token(self):
+        self.token_expiry = datetime.utcnow() - timedelta(seconds=1)
+
+    @staticmethod
+    def check_token(token):
+        speaker = Speaker.query.filter_by(token=token).first()
+        if speaker is None or speaker.token_expiry < datetime.utcnow():
+            return None
+        return speaker
 
 
 @login.user_loader
