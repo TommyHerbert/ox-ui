@@ -16,18 +16,13 @@ def verify_password(email, password):
     return speaker.check_password(password)
 
 
-@basic_auth.error_handler
-def basic_auth_error():
-    return error_response(401)
-
-
 @token_auth.verify_token
 def verify_token(token):
     g.current_speaker = Speaker.check_token(token) if token else None
     return g.current_speaker is not None
 
 
-# TODO: combine with basic_auth_error?
+@basic_auth.error_handler
 @token_auth.error_handler
 def token_auth_error():
     return error_response(401)
