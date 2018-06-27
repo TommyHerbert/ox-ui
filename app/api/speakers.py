@@ -1,5 +1,6 @@
 from app import db
 from app.api import bp
+from app.api.auth import token_auth
 from app.models import Speaker
 from flask import request, jsonify
 
@@ -22,16 +23,19 @@ def create_speaker():
 
 
 @bp.route('/speakers/<int:id>', methods=['DELETE'])
+@token_auth.login_required
 def delete_speaker(id):
     pass
 
 
 @bp.route('/speakers/<int:id>/conversations', methods=['GET'])
+@token_auth.login_required
 def get_conversations_for_speaker(id):
     pass
 
 
 @bp.route('/speakers/<int:id>/conversations/latest', methods=['GET'])
+@token_auth.login_required
 def get_latest_conversation_for_speaker(id):
     pass
 
