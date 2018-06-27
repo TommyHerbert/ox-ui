@@ -47,7 +47,7 @@ class Speaker(UserMixin, db.Model):
 
     def get_token(self, seconds_till_expiry=3600):
         now = datetime.utcnow()
-        if self.token and self.token_expiration > now + timedelta(seconds=60):
+        if self.token and self.token_expiry > now + timedelta(seconds=60):
             return self.token
         self.token = base64.b64encode(os.urandom(24)).decode('utf-8')
         self.token_expiry = now + timedelta(seconds=seconds_till_expiry)
