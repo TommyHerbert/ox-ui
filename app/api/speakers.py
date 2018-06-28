@@ -25,17 +25,17 @@ def create_speaker():
 @bp.route('/speakers/<int:id>', methods=['DELETE'])
 @token_auth.login_required
 def delete_speaker(id):
-    pass
+    pass # TODO
 
 
 @bp.route('/speakers/<int:id>/conversations', methods=['GET'])
 @token_auth.login_required
 def get_conversations_for_speaker(id):
-    pass
+    pass # TODO
 
 
 @bp.route('/speakers/<int:id>/conversations/latest', methods=['GET'])
 @token_auth.login_required
 def get_latest_conversation_for_speaker(id):
-    pass
+    pass # TODO
 
