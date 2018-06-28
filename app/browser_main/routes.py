@@ -47,11 +47,8 @@ def conversation(id):
 def new():
     ox = Speaker.query.filter_by(email='project.ox.mail@gmail.com').first()
     conversation = Conversation()
-
-    # TODO: experiment with ways to add multiple speakers at once
     conversation.speakers.append(ox)
     conversation.speakers.append(current_user)
-
     opener = Utterance(speaker=ox, text='Hello, my name is Ox.')
     conversation.add_utterance(opener)
     form = SaySomethingForm()
