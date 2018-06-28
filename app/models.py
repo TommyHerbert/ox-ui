@@ -45,13 +45,15 @@ class Speaker(UserMixin, db.Model):
         if new_speaker and 'password' in data:
             self.set_password(data['password'])
 
+    def to_dict(self):
+        return {'id': self.id, 'email': self.email}
+
     def get_token(self, seconds_till_expiry=3600):
         now = datetime.utcnow()
         if self.token and self.token_expiry > now + timedelta(seconds=60):
             return self.token
         self.token = base64.b64encode(os.urandom(24)).decode('utf-8')
         self.token_expiry = now + timedelta(seconds=seconds_till_expiry)
-        db.session.add(self)
         return self.token
 
     def revoke_token(self):
@@ -79,6 +81,11 @@ class Utterance(db.Model):
         db.Column(db.Integer, db.ForeignKey('conversation.id'), nullable=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
+    def to_dict(self):
+        dic = {'id': self.id, 'text': self.text, 'speaker_id': self.speaker_id}
+        dic['timestamp'] = self.timestamp.isoformat() + 'Z'
+        return dic
+
 
 class Conversation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -98,3 +105,16 @@ class Conversation(db.Model):
                 return u
         return None
 
+    def to_dict(self):
+        return_dict = {'id': self.id}
+        return_dict['timestamp'] = self.timestamp.isoformat() + 'Z'
+        return_dict['speakers'] = [s.to_dict() for s in self.speakers]
+        return_dict['utterances'] = [u.to_dict() for u in self.utterances]
+        return return_dict
+
+    def delete(self):
+        for u in self.utterances:
+            db.session.delete(u)
+        for s in self.speakers:
+            self.speakers.remove(s)
+        db.session.delete(self)
