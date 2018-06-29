@@ -4,6 +4,7 @@ from app.browser_main.forms import SaySomethingForm
 from flask_login import current_user, login_required
 from app.models import Speaker, Utterance, Conversation
 from app.browser_main import bp
+import mind
 
 
 @bp.route('/')
@@ -13,8 +14,8 @@ def index():
 
     # TODO: Can this filter be simplified?
     conversation_filter = Conversation.speakers.any(id=current_user.id)
-
     conversation = Conversation.query.filter(conversation_filter).first()
+
     if not conversation:
         return redirect(url_for('browser_main.new'))
     return redirect(url_for('browser_main.conversation', id=conversation.id))
@@ -34,9 +35,7 @@ def conversation(id):
         # TODO: reduce code duplication
         utterance = Utterance(speaker=current_user, text=form.text.data)
         conversation.add_utterance(utterance)
-        ox = Speaker.query.filter_by(email='project.ox.mail@gmail.com').first()
-        reply = Utterance(speaker=ox, text='Hello.')
-        conversation.add_utterance(reply)
+        mind.continue_conversation(conversation)
         db.session.commit()
         return redirect(url_for('browser_main.conversation', id=conversation.id))
     return render_template('index.html', utterances=utterances, form=form)
