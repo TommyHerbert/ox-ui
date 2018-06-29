@@ -6,8 +6,10 @@ from app.models import Speaker, Utterance
 ox = Speaker.query.filter_by(email='project.ox.mail@gmail.com').first()
 
 
-def start_conversation():
-    pass # TODO
+def start_conversation(conversation):
+    conversation.speakers.append(ox)
+    utterance = Utterance(speaker=ox, text='Hello, my name is Ox.')
+    conversation.add_utterance(utterance)
 
 
 def continue_conversation(conversation):
