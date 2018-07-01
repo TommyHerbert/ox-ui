@@ -29,15 +29,7 @@ def conversation(id):
         return 'no such conversation', 404
     if current_user not in conversation.speakers:
         return "tried to view another user's conversation", 403
-    utterances = conversation.utterances
-    form = SaySomethingForm()
-    if form.validate_on_submit():
-        utterance = Utterance(speaker=current_user, text=form.text.data)
-        conversation.add_utterance(utterance)
-        mind.continue_conversation(conversation)
-        db.session.commit()
-        return redirect(url_for('browser_main.conversation', id=conversation.id))
-    return render_template('index.html', utterances=utterances, form=form)
+    return _set_up_say_something_form(conversation)
 
 
 # TODO: reduce code duplication
@@ -47,16 +39,7 @@ def new():
     conversation = Conversation()
     conversation.speakers.append(current_user)
     mind.start_conversation(conversation)
-    utterances = conversation.utterances
-    form = SaySomethingForm()
-    if form.validate_on_submit():
-        utterance = Utterance(speaker=current_user, text=form.text.data)
-        conversation.add_utterance(utterance)
-        mind.continue_conversation(conversation)
-        db.session.commit()
-        return redirect(url_for('browser_main.index'))
-    db.session.commit()
-    return render_template('index.html', utterances=utterances, form=form)
+    return _set_up_say_something_form(conversation, new=True)
 
 
 @bp.route('/all')
@@ -73,3 +56,18 @@ def all_my_conversations():
 @login_required
 def about():
     return render_template('about.html', title='about')
+
+
+def _set_up_say_something_form(conversation, new=False):
+    utterances = conversation.utterances
+    form = SaySomethingForm()
+    if form.validate_on_submit():
+        utterance = Utterance(speaker=current_user, text=form.text.data)
+        conversation.add_utterance(utterance)
+        mind.continue_conversation(conversation)
+        db.session.commit()
+        if new:
+            return redirect(url_for('browser_main.index'))
+        else:
+            return redirect(url_for('browser_main.conversation', id=conversation.id))
+    return render_template('index.html', utterances=utterances, form=form)
