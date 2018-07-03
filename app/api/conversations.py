@@ -3,12 +3,16 @@ from app.models import Conversation
 from flask import jsonify
 from app import db
 from app.api.auth import token_auth
+import mind
 
 
 @bp.route('/conversations', methods=['POST'])
 @token_auth.login_required
 def create_conversation(data):
-    pass # TODO
+    conversation = Conversation()
+    conversation.speakers.append(current_user)
+    mind.start_conversation(conversation)
+    return jsonify(conversation.to_dict())
 
 
 @bp.route('/conversations/<int:id>', methods=['GET'])
