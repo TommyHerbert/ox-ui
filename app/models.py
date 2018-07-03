@@ -93,11 +93,14 @@ class Conversation(db.Model):
     utterances = \
         db.relationship('Utterance', backref='conversation', lazy='dynamic')
 
+    def add_speaker(self, speaker):
+        pass # TODO
+
     def add_utterance(self, utterance):
         utterance.conversation = self
         utterance.timestamp = datetime.utcnow()
         self.timestamp = utterance.timestamp
-        db.session.add(utterance)
+        db.session.add(utterance) # TODO can this be deleted?
 
     def get_first_user_utterance(self):
         for u in self.utterances:
@@ -118,3 +121,7 @@ class Conversation(db.Model):
         for s in self.speakers:
             self.speakers.remove(s)
         db.session.delete(self)
+
+    @staticmethod
+    def create():
+        pass # TODO

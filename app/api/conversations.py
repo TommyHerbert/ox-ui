@@ -1,6 +1,6 @@
 from app.api import bp
 from app.models import Conversation
-from flask import jsonify
+from flask import jsonify, g
 from app import db
 from app.api.auth import token_auth
 import mind
@@ -8,10 +8,12 @@ import mind
 
 @bp.route('/conversations', methods=['POST'])
 @token_auth.login_required
-def create_conversation(data):
+def create_conversation():
+    # TODO: persistence - consider how much should be done in model (compare with browser route)
     conversation = Conversation()
-    conversation.speakers.append(current_user)
+    conversation.speakers.append(g.current_speaker)
     mind.start_conversation(conversation)
+    db.session.commit()
     return jsonify(conversation.to_dict())
 
 
