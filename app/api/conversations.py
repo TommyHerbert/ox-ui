@@ -3,17 +3,14 @@ from app.models import Conversation
 from flask import jsonify, g
 from app import db
 from app.api.auth import token_auth
+from app import operations
 import mind
 
 
 @bp.route('/conversations', methods=['POST'])
 @token_auth.login_required
 def create_conversation():
-    # TODO: persistence - consider how much should be done in model (compare with browser route)
-    conversation = Conversation()
-    conversation.speakers.append(g.current_speaker)
-    mind.start_conversation(conversation)
-    db.session.commit()
+    conversation = operations.create_conversation(g.current_speaker)
     return jsonify(conversation.to_dict())
 
 

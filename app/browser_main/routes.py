@@ -5,6 +5,7 @@ from flask_login import current_user, login_required
 from app.models import Speaker, Utterance, Conversation
 from app.browser_main import bp
 import mind
+from app.operations import create_conversation
 
 
 @bp.route('/')
@@ -36,9 +37,7 @@ def conversation(id):
 @bp.route('/new', methods=['GET', 'POST'])
 @login_required
 def new():
-    conversation = Conversation()
-    conversation.speakers.append(current_user)
-    mind.start_conversation(conversation)
+    conversation = create_conversation(current_user)
     return _set_up_say_something_form(conversation, new=True)
 
 

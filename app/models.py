@@ -94,7 +94,7 @@ class Conversation(db.Model):
         db.relationship('Utterance', backref='conversation', lazy='dynamic')
 
     def add_speaker(self, speaker):
-        pass # TODO
+        self.speakers.append(speaker)
 
     def add_utterance(self, utterance):
         utterance.conversation = self
@@ -124,4 +124,7 @@ class Conversation(db.Model):
 
     @staticmethod
     def create():
-        pass # TODO
+        conversation = Conversation()
+        db.session.add(conversation)
+        return conversation
+
