@@ -12,11 +12,9 @@ def create_speaker():
         return bad_request('must include email and password fields')
     if Speaker.query.filter_by(email=data['email']).first():
         return bad_request('please use a different email address')
-    speaker = Speaker()
+    speaker = Speaker.create()
     speaker.from_dict(data, new_speaker=True)
-    db.session.add(speaker)
     db.session.commit()
-    speaker = Speaker.query.filter_by(email=speaker.email).first()
     response = jsonify({'id': speaker.id})
     response.status_code = 201
     return response

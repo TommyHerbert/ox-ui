@@ -37,9 +37,9 @@ def sign_up():
         return redirect(url_for('browser_main.index'))
     form = SignUpForm()
     if form.validate_on_submit():
-        speaker = Speaker(email=form.email.data)
+        speaker = Speaker.creat()
+        speaker.email = form.email.data
         speaker.set_password(form.password.data)
-        db.session.add(speaker)
         db.session.commit()
         return redirect(url_for('browser_auth.sign_in'))
     return render_template('auth/signup.html', title='sign up', form=form)

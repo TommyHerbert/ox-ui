@@ -66,6 +66,12 @@ class Speaker(UserMixin, db.Model):
             return None
         return speaker
 
+    @staticmethod
+    def create():
+        speaker = Speaker()
+        db.session.add(speaker)
+        return speaker
+
 
 @login.user_loader
 def load_speaker(id):
