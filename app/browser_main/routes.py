@@ -21,7 +21,6 @@ def index():
     return redirect(url_for('browser_main.conversation', id=conversation.id))
 
 
-# TODO: reduce code duplication
 @bp.route('/conversations/<id>', methods=['GET', 'POST'])
 @login_required
 def conversation(id):
@@ -33,7 +32,6 @@ def conversation(id):
     return _set_up_say_something_form(conversation)
 
 
-# TODO: reduce code duplication
 @bp.route('/new', methods=['GET', 'POST'])
 @login_required
 def new():
