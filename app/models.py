@@ -106,7 +106,6 @@ class Conversation(db.Model):
         utterance.conversation = self
         utterance.timestamp = datetime.utcnow()
         self.timestamp = utterance.timestamp
-        db.session.add(utterance) # TODO can this be deleted?
 
     def get_first_user_utterance(self):
         for u in self.utterances:
