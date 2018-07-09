@@ -1,0 +1,3 @@
+class KnowledgeBase:
+    pass
+
