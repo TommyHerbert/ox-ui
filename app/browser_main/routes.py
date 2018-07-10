@@ -4,7 +4,7 @@ from app.browser_main.forms import SaySomethingForm
 from flask_login import current_user, login_required
 from app.models import Speaker, Utterance, Conversation
 from app.browser_main import bp
-import mind
+from conversation import mind
 from app.operations import create_conversation
 
 

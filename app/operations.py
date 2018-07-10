@@ -1,6 +1,6 @@
 from app import db
 from app.models import Conversation
-import mind
+from conversation import mind
 
 
 def create_conversation(speaker):

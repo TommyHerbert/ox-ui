@@ -4,7 +4,6 @@ from flask import jsonify, g
 from app import db
 from app.api.auth import token_auth
 from app import operations
-import mind
 
 
 @bp.route('/conversations', methods=['POST'])

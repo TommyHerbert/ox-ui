@@ -1,7 +1,7 @@
 from app.api import bp
 from app.api.auth import token_auth
 from flask import request, jsonify, g
-import mind
+from conversation import mind
 
 
 @bp.route('/utterances', methods=['POST'])
