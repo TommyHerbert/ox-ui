@@ -1,2 +1,2 @@
-# ox-ui
-This is a front end for https://github.com/TommyHerbert/ox, and will eventually be merged with that project.
+# ox
+will create a chatbot that passes the Turing Test
