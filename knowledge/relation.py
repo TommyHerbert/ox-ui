@@ -12,3 +12,4 @@ def has_lexical_form(relation, lexical_form):
         except AttributeError:
             return False
     return False
+
