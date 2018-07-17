@@ -12,14 +12,22 @@ class CompoundNoun:
         if len(words) != 2:
             return None
         category = reader.parse(words[1])
-        return LogicalTreeBranch(partial(self.find_referents, words[0], reader), [category]) if category else None
+        if not category:
+            return None
+        find_referents = partial(self.find_referents, words[0], reader)
+        return LogicalTreeBranch(find_referents, [category])
 
     def find_referents(self, qualifier_string, reader, category):
+        def instance(r):
+            return r.relation_type == 'is_a' and r.arguments[1] == category
         relations = reader.get_relations()
-        instances = [r.arguments[0] for r in relations if r.relation_type == 'is_a' and r.arguments[1] == category]
-        return [i for i in instances if self.is_related(i, qualifier_string, relations)]
+        instances = [r.arguments[0] for r in relations if instance(r)]
+        related = lambda i: self.is_related(i, qualifier_string, relations)
+        return [i for i in instances if related(i)]
 
     @staticmethod
     def is_related(obj, lexical_form, relations):
-        relevant_relations = [r for r in relations if obj in r.arguments and has_lexical_form(r, lexical_form)]
-        return len(relevant_relations) > 0
+        def relevant(r):
+            return obj in r.arguments and has_lexical_form(r, lexical_form)
+        return len([r for r in relations if relevant(r)]) > 0
+
