@@ -96,6 +96,7 @@ class Utterance(db.Model):
 class Conversation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    context = db.Column(db.PickleType())
     utterances = \
         db.relationship('Utterance', backref='conversation', lazy='dynamic')
 
