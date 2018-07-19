@@ -1,8 +1,8 @@
-class Speaker:
+class Expresser:
     def __init__(self):
         pass
 
     @staticmethod
-    def utter(concept):
+    def express(concept):
         return concept.lexical_form
 

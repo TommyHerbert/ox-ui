@@ -72,6 +72,10 @@ class Speaker(UserMixin, db.Model):
         db.session.add(speaker)
         return speaker
 
+    @staticmethod
+    def find_by_email(address):
+        return Speaker.query.filter_by(email=address).first()
+
 
 @login.user_loader
 def load_speaker(id):
