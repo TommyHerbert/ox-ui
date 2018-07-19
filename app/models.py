@@ -131,6 +131,7 @@ class Conversation(db.Model):
     @staticmethod
     def create():
         conversation = Conversation()
+        conversation.context = []
         db.session.add(conversation)
         return conversation
 

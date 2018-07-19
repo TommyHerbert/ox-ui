@@ -1,4 +1,4 @@
-from main.knowledge.concept import Thing
+from knowledge.concept import Thing
 
 
 class Adele(Thing):

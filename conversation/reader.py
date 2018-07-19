@@ -3,7 +3,7 @@ class Reader:
         self.knowledge_base = knowledge_base
 
     def read_last_move(self, conversation):
-        logical_form = self.parse(conversation.moves[-1])
+        logical_form = self.parse(conversation.utterances[-1].text)
         if logical_form:
             conversation.context.append(logical_form)
 

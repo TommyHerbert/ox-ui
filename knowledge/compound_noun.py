@@ -1,6 +1,6 @@
 from functools import partial
-from main.knowledge.logical_tree import LogicalTreeBranch
-from main.knowledge.relation import has_lexical_form
+from knowledge.logical_tree import LogicalTreeBranch
+from knowledge.relation import has_lexical_form
 
 
 class CompoundNoun:

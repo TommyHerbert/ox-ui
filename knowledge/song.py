@@ -1,4 +1,4 @@
-from main.knowledge.concept import Category
+from knowledge.concept import Category
 
 
 class Song(Category):
