@@ -29,13 +29,13 @@ class FavouriteQuestion(Question):
         def relevant(r):
             return r.relation_type == 'is_a' and r.arguments[1] == category
         if type(instances) != list:
-            instances = [r.arguments[0] for r in relations if relevant(r)
+            instances = [r.arguments[0] for r in relations if relevant(r)]
         return self.find_favourite_in_list(relations, instances)
 
     def find_favourite_in_list(relations, candidates):
         def ox_likes_relation(r):
             return r.relation_type == 'likes' and \
-                   r.arguments[0].__class__ = Myself and \
+                   r.arguments[0].__class__ == Myself and \
                    r.arguments[1] in candidates
         ox_likes = [r for r in relations if ox_likes_relation(r)]
         if len(ox_likes) == 0:
