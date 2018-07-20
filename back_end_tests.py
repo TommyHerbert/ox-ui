@@ -31,5 +31,7 @@ class BackEndTests(unittest.TestCase):
         continue_conversation(conversation)
         self.assertEqual('Hello', conversation.utterances[-1].text)
 
+    # TODO: adapt the other back end tests from the ox project
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
