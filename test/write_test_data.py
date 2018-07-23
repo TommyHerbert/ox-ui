@@ -22,7 +22,6 @@ conversation_start = datetime.utcnow() - timedelta(seconds=2)
 conversation = Conversation(timestamp=conversation_start)
 conversation.speakers.append(ox)
 conversation.speakers.append(thomas)
-conversation.context=[]
 db.session.add(conversation)
 
 u1 = Utterance(speaker=ox,
