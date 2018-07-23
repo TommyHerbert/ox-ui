@@ -1,7 +1,7 @@
 from app.api import bp
 from app.api.auth import token_auth
 from flask import request, jsonify, g
-from conversation import mind
+from conversation.mind import Mind
 
 
 @bp.route('/utterances', methods=['POST'])
@@ -16,6 +16,6 @@ def post_utterance():
         return error_response(404, 'no such conversation')
     utterance = Utterance(speaker_id=data['speaker_id'], text=data['text'])
     conversation.add_utterance(utterance)
-    mind.continue_conversation(conversation)
+    Mind().continue_conversation(conversation)
     db.session.commit()
 

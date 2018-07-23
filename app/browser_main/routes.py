@@ -4,7 +4,7 @@ from app.browser_main.forms import SaySomethingForm
 from flask_login import current_user, login_required
 from app.models import Speaker, Utterance, Conversation
 from app.browser_main import bp
-from conversation import mind
+from conversation.mind import Mind
 from app.operations import create_conversation
 
 
@@ -61,7 +61,7 @@ def _set_up_say_something_form(conversation, new=False):
     if form.validate_on_submit():
         utterance = Utterance(speaker=current_user, text=form.text.data)
         conversation.add_utterance(utterance)
-        mind.continue_conversation(conversation)
+        Mind().continue_conversation(conversation)
         db.session.commit()
         if new:
             return redirect(url_for('browser_main.index'))
